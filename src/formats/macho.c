@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdlib.h>
+#include <inttypes.h>
 #include "formats/macho.h"
 #include "utils.h"
 
@@ -192,7 +193,7 @@ struct segment_command_64 *macho_get_segment_for_va(void *buf, uint64_t addr) {
         after_header = (struct load_command_64 *) ((char *) after_header + after_header->cmdsize);
     }
 
-    printf("%s: Unable to find segment containing 0x%lx!\n", __FUNCTION__, addr);
+    printf("%s: Unable to find segment containing 0x%" PRIx64 "!\n", __FUNCTION__, addr);
     return NULL;
 }
 
@@ -211,7 +212,7 @@ struct section_64 *macho_get_section_for_va(struct segment_command_64 *segment, 
         section = (struct section_64 *) ((char *) section + sizeof(struct section_64));
     }
 
-    printf("%s: Unable to find section containing 0x%lx?\n", __FUNCTION__, addr);
+    printf("%s: Unable to find section containing 0x%" PRIx64 "?\n", __FUNCTION__, addr);
     return NULL;
 }
 
@@ -246,6 +247,7 @@ void *macho_va_to_ptr(void *buf, uint64_t addr) {
     }
 
     struct section_64 *section = macho_get_section_for_va(segment, addr);
+    if (!section) return NULL;
 
     uint64_t offset = addr - section->addr;
     
