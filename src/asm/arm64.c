@@ -1,11 +1,12 @@
 #include "asm/arm64.h"
 #include <stdio.h>
+#include <stdint.h>
 
 uint32_t arm64_branch(void *caller, void *target, bool link) {
     uint32_t insn = 0x14000000;
 
     if (link) {
-        insn |= 1 << 31;
+        insn |= UINT32_C(1) << 31;
     }
 
     uint32_t offset = (target - caller) >> 2;
